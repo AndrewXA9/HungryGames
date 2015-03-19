@@ -44,7 +44,10 @@ public class InputMenu : MonoBehaviour{
 	
 		int numba = 0;
 		float bWidth = (Screen.width/(float)width);
-		float bHeight = (Screen.height/(float)height);
+		float bHeight = ((Screen.height*0.95f)/(float)height);
+		
+		float padX = Screen.width*padding;
+		float padY = Screen.width*padding;
 		
 		//contestants
 		for (int i=0; i<height; i++) {
@@ -56,8 +59,7 @@ public class InputMenu : MonoBehaviour{
 				//Make current draw area
 				float offsetX = -(Screen.width*padding);
 				float offsetY = Screen.width*padding;
-				float padX = Screen.width*padding;
-				float padY = Screen.width*padding;
+				
 				if(numba%2 == 0){
 					offsetX = -offsetX;
 				}
@@ -67,7 +69,7 @@ public class InputMenu : MonoBehaviour{
 				GUI.Box(bounds,"");
 				
 				GUI.skin.label.fontSize = GUI.skin.textField.fontSize = GUI.skin.textArea.fontSize = (int)((bHeight/slices)/2);
-				GUI.skin.button.fontSize = GUI.skin.textField.fontSize = GUI.skin.textArea.fontSize = (int)((bHeight/slices)/3);
+				GUI.skin.button.fontSize = (int)((bHeight/slices)/3);
 				
 				string bDisp;
 				
@@ -118,6 +120,8 @@ public class InputMenu : MonoBehaviour{
 					}
 				}
 				
+				GUI.skin.button.fontSize = (int)((bHeight/slices)/2);
+				
 				//Sex
 				bDisp = "Female";
 				if(cont.gender){
@@ -150,6 +154,17 @@ public class InputMenu : MonoBehaviour{
 				numba++;
 			}	
 		}
+		
+		//extra buttons
+		Rect bottomBox = new Rect(padX,(Screen.height*0.95f)+padY,Screen.width-(padX*2f),(Screen.height*0.05f)-(padY*2f));
+		if(GUI.Button(new Rect(bottomBox.x,bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"New")){
+			Application.LoadLevel(Application.loadedLevel);
+		}
+		if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"GOOOOOOOOOOO")){
+			this.enabled = false;
+			Debug.Log("dostuff");
+		}
+		
 	}
 	
 	public void Fit(string input,float maxSize,GUIStyle element){
