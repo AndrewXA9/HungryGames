@@ -14,6 +14,7 @@ public class Contestant{
 	public float intelligence;
 	
 	public float stamina;
+	public List<Weapon> weapons;
 	public Dictionary<Contestant,float> relationships;
 	
 	public bool alive;
