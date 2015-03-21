@@ -51,8 +51,9 @@ public class InputMenu : MonoBehaviour{
 		float padX = Screen.width*padding;
 		float padY = Screen.width*padding;
 		
-		//contestants
+		
 		if(display == 0){
+			//contestants
 			
 			for (int i=0; i<height; i++) {
 				for (int j=0; j<width; j++) {
@@ -175,15 +176,17 @@ public class InputMenu : MonoBehaviour{
 			
 		}
 		else if(display == 1){
+			//secondary screen
+			
 			
 			
 			Rect bottomBox = new Rect(padX,(Screen.height*0.95f)+padY,Screen.width-(padX*2f),(Screen.height*0.05f)-(padY*2f));
-			if(GUI.Button(new Rect(bottomBox.x,bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Add Sponsor")){
-				Debug.Log("dostuff");
-			}
-			if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Add Weapon")){
-				Debug.Log("dostuff");
-			}
+			//if(GUI.Button(new Rect(bottomBox.x,bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Something")){
+			//	Debug.Log("dostuff");
+			//}
+			//if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Something Else")){
+			//	Debug.Log("dostuff");
+			//}
 			if(GUI.Button(new Rect(bottomBox.x+((bottomBox.width/3f)*2),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Contestants")){
 				display = 0;
 			}
