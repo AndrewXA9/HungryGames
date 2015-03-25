@@ -25,11 +25,7 @@ public class InputMenu : MonoBehaviour{
 		
 		
 		for(int i=0;i<(height*width);i++){
-			bool sex = false;
-			if(i%2 == 0){
-				sex = true;
-			}
-			Manager.manager.contestants[i] = new Contestant("Contestant "+(i+1).ToString(),new Texture2D(0,0),((i/2)+1),sex,0.5f,0.5f,0.5f);
+			
 			urls[i] = "IMAGE URL";
 		}
 		
@@ -139,11 +135,6 @@ public class InputMenu : MonoBehaviour{
 					GUI.skin.label.alignment = TextAnchor.UpperCenter;
 					float sliderHeight = GUI.skin.horizontalSlider.CalcHeight(new GUIContent(),bounds.width);
 					
-					float prevStr = cont.strength;
-					float prevFri = cont.friendliness;
-					float prevInt = cont.intelligence;
-					float diff = 0f;
-					
 					//Strength
 					cont.strength = GUI.HorizontalSlider(new Rect(bounds.x,bounds.y+((bounds.height/slices)*6f)-sliderHeight,bounds.width,bounds.height/slices),cont.strength,0f,1f);
 					GUI.Label(new Rect(bounds.x,bounds.y+((bounds.height/slices)*5f)-2f,bounds.width,bounds.height/slices),"Strength: "+((int)(cont.strength*10f)).ToString());
@@ -169,7 +160,7 @@ public class InputMenu : MonoBehaviour{
 				this.enabled = false;
 				Debug.Log("dostuff");
 			}
-			if(GUI.Button(new Rect(bottomBox.x+((bottomBox.width/3f)*2),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Environment")){
+			if(GUI.Button(new Rect(bottomBox.x+((bottomBox.width/3f)*2),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Sponsors/Weapons")){
 				display = 1;
 			}
 			
@@ -180,7 +171,10 @@ public class InputMenu : MonoBehaviour{
 			
 			//sponsors
 			for(int i=0;i<Manager.manager.sponsors.Count;i++){
-				Rect bounds = new Rect((Screen.width/2f)-((bWidth*(float)Manager.manager.sponsors.Count)/2f)+((bWidth*(float)i)),(Screen.height/3f),bWidth-(padX),bHeight-(padY*2f));
+			
+				float offsetY = Screen.width*padding;
+				
+				Rect bounds = new Rect((Screen.width/2f)-((bWidth*(float)Manager.manager.sponsors.Count)/2f)+((bWidth*(float)i)),((bHeight*3f)/12f)*1f,bWidth-(padX),bHeight-(padY*2f));
 				Sponsor spons = Manager.manager.sponsors[i];
 				GUI.Box(bounds,"");
 				
@@ -241,17 +235,89 @@ public class InputMenu : MonoBehaviour{
 				
 			}
 			
+			//weapons
+			for(int i=0;i<Manager.manager.weapons.Count;i++){
+				
+				float offsetY = Screen.width*padding;
+				
+				Rect bounds = new Rect((Screen.width/2f)-((bWidth*(float)Manager.manager.weapons.Count)/2f)+((bWidth*(float)i)),((bHeight*3f)/12f)*7f,bWidth-(padX),bHeight-(padY*2f));
+				Weapon weap = Manager.manager.weapons[i];
+				GUI.Box(bounds,"");
+				
+				GUI.skin.label.fontSize = GUI.skin.textField.fontSize = GUI.skin.textArea.fontSize = (int)((bHeight/slices)/2);
+				GUI.skin.button.fontSize = (int)((bHeight/slices)/3);
+				
+				string bDisp;
+				
+				//Name
+				Fit(weap.name,(bounds.width),GUI.skin.textField);
+				weap.name = GUI.TextField(new Rect(bounds.x+(bounds.width/4f),bounds.y,(bounds.width/4f)*3f,bounds.height/slices),weap.name);
+				GUI.skin.textField.fontSize = (int)((bHeight/slices)/2);
+				
+				//URL and Image
+				if(weap.image.width == 0){
+					urls[numba] = GUI.TextArea(new Rect(bounds.x,bounds.y+(bounds.height/slices),(bounds.width),(bounds.height/slices)*2f),urls[numba]);
+					
+					bDisp = "Download Image";
+					if(requests[numba] != null){
+						if(requests[numba].progress < 1f){
+							bDisp = ((int)(requests[numba].progress*100f)).ToString()+"%";
+						}
+						else{
+							if(string.IsNullOrEmpty(requests[numba].error)){
+								requests[numba].LoadImageIntoTexture(weap.image);
+							}
+							else{
+								urls[numba] = "Couldn't load image";
+							}
+							requests[numba].Dispose();
+							requests[numba] = null;
+						}
+						
+					}
+					
+					if(GUI.Button(new Rect(bounds.x,bounds.y+((bounds.height/slices)*3f),(bounds.width),(bounds.height/slices/2)),bDisp)){
+						if(requests[numba] != null){
+							requests[numba].Dispose();
+							Debug.Log("Deleting old");
+						}
+						requests[numba] = new WWW(urls[numba]);
+						Debug.Log("Requesting new");
+					}
+				}
+				else{
+					GUI.DrawTexture(new Rect(bounds.x,bounds.y+(bounds.height/slices),bounds.width,bounds.height/slices*3f),weap.image,ScaleMode.ScaleToFit);
+					if(GUI.Button(new Rect(bounds.x+bounds.width-(bounds.height/slices),bounds.y+((bounds.height/slices)*3f),(bounds.height/slices),(bounds.height/slices)),"New")){
+						Texture2D.Destroy(weap.image);
+						weap.image = new Texture2D(0,0);
+					}
+				}
+				
+				GUI.skin.button.fontSize = (int)((bHeight/slices)/2);
+				
+				if(GUI.Button(new Rect(bounds.x,bounds.y+((bounds.height/slices)*6),bounds.width,bounds.height/slices),"Remove")){
+					Manager.manager.weapons.Remove(weap);
+				}
+				
+			}
+			
 			
 			Rect bottomBox = new Rect(padX,(Screen.height*0.95f)+padY,Screen.width-(padX*2f),(Screen.height*0.05f)-(padY*2f));
-			if(GUI.Button(new Rect(bottomBox.x,bottomBox.y,(bottomBox.width/4f)-padX,bottomBox.height),"Add Sponsor")){
-				Manager.manager.sponsors.Add(new Sponsor(new Texture2D(0,0), "Sponsor Name"));
+			
+			if(Manager.manager.sponsors.Count < 8){
+				if(GUI.Button(new Rect(bottomBox.x,bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Add Sponsor")){
+					Manager.manager.sponsors.Add(new Sponsor(new Texture2D(0,0), "Sponsor "+(Manager.manager.weapons.Count+1).ToString()));
+				}
 			}
-			if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/4f)-padX,bottomBox.height),"Add Weapon")){
-				Manager.manager.sponsors.Add(new Sponsor(new Texture2D(0,0), "Weapon Name"));
+			if(Manager.manager.weapons.Count < 8){
+				if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Add Weapon")){
+					Manager.manager.weapons.Add(new Weapon(new Texture2D(0,0), "Weapon "+(Manager.manager.weapons.Count+1).ToString(),5));
+				}
 			}
 			if(GUI.Button(new Rect(bottomBox.x+((bottomBox.width/3f)*2),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Contestants")){
 				display = 0;
 			}
+			
 		}
 		
 		
@@ -271,8 +337,6 @@ public class InputMenu : MonoBehaviour{
 			
 		}
 	}
-	
-	
 	
 }
 
