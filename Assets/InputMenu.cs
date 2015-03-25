@@ -178,15 +178,77 @@ public class InputMenu : MonoBehaviour{
 		else if(display == 1){
 			//secondary screen
 			
+			//sponsors
+			for(int i=0;i<Manager.manager.sponsors.Count;i++){
+				Rect bounds = new Rect((Screen.width/2f)-((bWidth*(float)Manager.manager.sponsors.Count)/2f)+((bWidth*(float)i)),(Screen.height/3f),bWidth-(padX),bHeight-(padY*2f));
+				Sponsor spons = Manager.manager.sponsors[i];
+				GUI.Box(bounds,"");
+				
+				GUI.skin.label.fontSize = GUI.skin.textField.fontSize = GUI.skin.textArea.fontSize = (int)((bHeight/slices)/2);
+				GUI.skin.button.fontSize = (int)((bHeight/slices)/3);
+				
+				string bDisp;
+				
+				//Name
+				Fit(spons.name,(bounds.width),GUI.skin.textField);
+				spons.name = GUI.TextField(new Rect(bounds.x+(bounds.width/4f),bounds.y,(bounds.width/4f)*3f,bounds.height/slices),spons.name);
+				GUI.skin.textField.fontSize = (int)((bHeight/slices)/2);
+				
+				//URL and Image
+				if(spons.image.width == 0){
+					urls[numba] = GUI.TextArea(new Rect(bounds.x,bounds.y+(bounds.height/slices),(bounds.width),(bounds.height/slices)*2f),urls[numba]);
+					
+					bDisp = "Download Image";
+					if(requests[numba] != null){
+						if(requests[numba].progress < 1f){
+							bDisp = ((int)(requests[numba].progress*100f)).ToString()+"%";
+						}
+						else{
+							if(string.IsNullOrEmpty(requests[numba].error)){
+								requests[numba].LoadImageIntoTexture(spons.image);
+							}
+							else{
+								urls[numba] = "Couldn't load image";
+							}
+							requests[numba].Dispose();
+							requests[numba] = null;
+						}
+						
+					}
+					
+					if(GUI.Button(new Rect(bounds.x,bounds.y+((bounds.height/slices)*3f),(bounds.width),(bounds.height/slices/2)),bDisp)){
+						if(requests[numba] != null){
+							requests[numba].Dispose();
+							Debug.Log("Deleting old");
+						}
+						requests[numba] = new WWW(urls[numba]);
+						Debug.Log("Requesting new");
+					}
+				}
+				else{
+					GUI.DrawTexture(new Rect(bounds.x,bounds.y+(bounds.height/slices),bounds.width,bounds.height/slices*3f),spons.image,ScaleMode.ScaleToFit);
+					if(GUI.Button(new Rect(bounds.x+bounds.width-(bounds.height/slices),bounds.y+((bounds.height/slices)*3f),(bounds.height/slices),(bounds.height/slices)),"New")){
+						Texture2D.Destroy(spons.image);
+						spons.image = new Texture2D(0,0);
+					}
+				}
+				
+				GUI.skin.button.fontSize = (int)((bHeight/slices)/2);
+				
+				if(GUI.Button(new Rect(bounds.x,bounds.y+((bounds.height/slices)*6),bounds.width,bounds.height/slices),"Remove")){
+					Manager.manager.sponsors.Remove(spons);
+				}
+				
+			}
 			
 			
 			Rect bottomBox = new Rect(padX,(Screen.height*0.95f)+padY,Screen.width-(padX*2f),(Screen.height*0.05f)-(padY*2f));
-			//if(GUI.Button(new Rect(bottomBox.x,bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Something")){
-			//	Debug.Log("dostuff");
-			//}
-			//if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Something Else")){
-			//	Debug.Log("dostuff");
-			//}
+			if(GUI.Button(new Rect(bottomBox.x,bottomBox.y,(bottomBox.width/4f)-padX,bottomBox.height),"Add Sponsor")){
+				Manager.manager.sponsors.Add(new Sponsor(new Texture2D(0,0), "Sponsor Name"));
+			}
+			if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/4f)-padX,bottomBox.height),"Add Weapon")){
+				Manager.manager.sponsors.Add(new Sponsor(new Texture2D(0,0), "Weapon Name"));
+			}
 			if(GUI.Button(new Rect(bottomBox.x+((bottomBox.width/3f)*2),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Contestants")){
 				display = 0;
 			}
