@@ -17,6 +17,8 @@ public class Contestant{
 	public List<Weapon> weapons;
 	public Dictionary<Contestant,float> relationships;
 	
+	public int kills;
+	
 	public bool alive;
 	
 	public Contestant(string _name,Texture2D _image,int _district,bool _gender,float _strength,float _friendliness,float _intelligence){
@@ -30,6 +32,8 @@ public class Contestant{
 		
 		stamina = 0.5f;
 		relationships = new Dictionary<Contestant, float>();
+		
+		kills = 0;
 		
 		alive = true;
 		

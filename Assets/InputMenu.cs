@@ -8,7 +8,7 @@ public class InputMenu : MonoBehaviour{
 	
 	private int slices = 8;
 	
-	public float padding = 0.001f;
+	private float padding = 0.002f;
 	
 	private string[] urls;
 	private WWW[] requests;
@@ -33,7 +33,11 @@ public class InputMenu : MonoBehaviour{
 	
 	void Update(){
 		if(Input.GetKeyDown(KeyCode.Space)){
+			Texture2D img = (Texture2D)Resources.Load("guy");
 			
+			foreach(Contestant i in Manager.manager.contestants){
+				i.image = img;
+			}
 		}
 	}
 	
@@ -78,7 +82,7 @@ public class InputMenu : MonoBehaviour{
 					GUI.Label(new Rect(bounds.x,bounds.y,bounds.width/4f,bounds.height/slices),cont.district.ToString()+":");
 					
 					//Name
-					Fit(cont.name,(bounds.width/4f)*3,GUI.skin.textField);
+					Utility.Fit(cont.name,(bounds.width/4f)*3,GUI.skin.textField);
 					cont.name = GUI.TextField(new Rect(bounds.x+(bounds.width/4f),bounds.y,(bounds.width/4f)*3f,bounds.height/slices),cont.name);
 					GUI.skin.textField.fontSize = (int)((bHeight/slices)/2);
 					
@@ -158,7 +162,7 @@ public class InputMenu : MonoBehaviour{
 			}
 			if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"GOOOOOOOOOOO")){
 				this.enabled = false;
-				Debug.Log("dostuff");
+				gameObject.GetComponent<Simulate>().enabled = true;
 			}
 			if(GUI.Button(new Rect(bottomBox.x+((bottomBox.width/3f)*2),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Sponsors/Weapons")){
 				display = 1;
@@ -184,7 +188,7 @@ public class InputMenu : MonoBehaviour{
 				string bDisp;
 				
 				//Name
-				Fit(spons.name,(bounds.width),GUI.skin.textField);
+				Utility.Fit(spons.name,(bounds.width),GUI.skin.textField);
 				spons.name = GUI.TextField(new Rect(bounds.x+(bounds.width/4f),bounds.y,(bounds.width/4f)*3f,bounds.height/slices),spons.name);
 				GUI.skin.textField.fontSize = (int)((bHeight/slices)/2);
 				
@@ -250,7 +254,7 @@ public class InputMenu : MonoBehaviour{
 				string bDisp;
 				
 				//Name
-				Fit(weap.name,(bounds.width),GUI.skin.textField);
+				Utility.Fit(weap.name,(bounds.width),GUI.skin.textField);
 				weap.name = GUI.TextField(new Rect(bounds.x+(bounds.width/4f),bounds.y,(bounds.width/4f)*3f,bounds.height/slices),weap.name);
 				GUI.skin.textField.fontSize = (int)((bHeight/slices)/2);
 				
@@ -299,6 +303,12 @@ public class InputMenu : MonoBehaviour{
 					Manager.manager.weapons.Remove(weap);
 				}
 				
+				GUI.skin.label.alignment = TextAnchor.UpperCenter;
+				float sliderHeight = GUI.skin.horizontalSlider.CalcHeight(new GUIContent(),bounds.width);
+				
+				weap.damage = GUI.HorizontalSlider(new Rect(bounds.x,bounds.y+((bounds.height/slices)*5f)-sliderHeight,bounds.width,bounds.height/slices),weap.damage,0f,1f);
+				GUI.Label(new Rect(bounds.x,bounds.y+((bounds.height/slices)*4f)-2f,bounds.width,bounds.height/slices),"Damage: "+((int)(weap.damage*10f)).ToString());
+				
 			}
 			
 			
@@ -311,7 +321,7 @@ public class InputMenu : MonoBehaviour{
 			}
 			if(Manager.manager.weapons.Count < 8){
 				if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Add Weapon")){
-					Manager.manager.weapons.Add(new Weapon(new Texture2D(0,0), "Weapon "+(Manager.manager.weapons.Count+1).ToString(),5));
+					Manager.manager.weapons.Add(new Weapon(new Texture2D(0,0), "Weapon "+(Manager.manager.weapons.Count+1).ToString(),0.5f));
 				}
 			}
 			if(GUI.Button(new Rect(bottomBox.x+((bottomBox.width/3f)*2),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Contestants")){
@@ -324,19 +334,6 @@ public class InputMenu : MonoBehaviour{
 		
 	}
 	
-	public void Fit(string input,float maxSize,GUIStyle element){
-		if(element.CalcSize(new GUIContent(input)).x > maxSize){
-			
-			element.fontSize -= 1;
-			
-			if(element.fontSize <=1){
-				return;
-			}
-			
-			Fit(input,maxSize,element);
-			
-		}
-	}
 	
 }
 
