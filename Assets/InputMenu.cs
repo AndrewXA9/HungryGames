@@ -1,17 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
+//using System.Collections.Generic;
 
 public class InputMenu : MonoBehaviour{
 
 	private int height = 3;
 	private int width = 8;
 	
+	private int maxWeaps = 8;
+	
 	private int slices = 8;
 	
 	private float padding = 0.002f;
 	
-	private string[] urls;
-	private WWW[] requests;
+	private string[] ContUrls;
+	private WWW[] ContRequests;
+	private string[] SponsUrls;
+	private WWW[] SponsRequests;
+	private string[] WeapUrls;
+	private WWW[] WeapRequests;
 	
 	public GUISkin skin;
 	
@@ -20,13 +27,22 @@ public class InputMenu : MonoBehaviour{
 	void Start (){
 		
 		Manager.manager = new Manager();
-		urls = new string[height*width];
-		requests = new WWW[height*width];
+		ContUrls = new string[height*width];
+		ContRequests = new WWW[height*width];
+		SponsUrls = new string[maxWeaps];
+		SponsRequests = new WWW[maxWeaps];
+		WeapUrls = new string[maxWeaps];
+		WeapRequests = new WWW[maxWeaps];
 		
 		
 		for(int i=0;i<(height*width);i++){
 			
-			urls[i] = "IMAGE URL";
+			ContUrls[i] = "IMAGE URL";
+			
+			if(i<maxWeaps){
+				SponsUrls[i] = "IMAGE URL";
+				WeapUrls[i] = "IMAGE URL";
+			}
 		}
 		
 	}
@@ -87,6 +103,8 @@ public class InputMenu : MonoBehaviour{
 					GUI.skin.textField.fontSize = (int)((bHeight/slices)/2);
 					
 					//URL and Image
+					Utility.ImageBox(ref cont.image,ref ContUrls[numba],ref ContRequests[numba],bounds,slices);
+					/*
 					if(cont.image.width == 0){
 						urls[numba] = GUI.TextArea(new Rect(bounds.x,bounds.y+(bounds.height/slices),(bounds.width),(bounds.height/slices)*2f),urls[numba]);
 						
@@ -118,12 +136,13 @@ public class InputMenu : MonoBehaviour{
 						}
 					}
 					else{
+						GUI.Box(new Rect(bounds.x,bounds.y+(bounds.height/slices),bounds.width,bounds.height/slices*3f),"");
 						GUI.DrawTexture(new Rect(bounds.x,bounds.y+(bounds.height/slices),bounds.width,bounds.height/slices*3f),cont.image,ScaleMode.ScaleToFit);
 						if(GUI.Button(new Rect(bounds.x+bounds.width-(bounds.height/slices),bounds.y+((bounds.height/slices)*3f),(bounds.height/slices),(bounds.height/slices)),"New")){
 							Texture2D.Destroy(cont.image);
 							cont.image = new Texture2D(0,0);
 						}
-					}
+					}*/
 					
 					GUI.skin.button.fontSize = (int)((bHeight/slices)/2);
 					
@@ -193,43 +212,7 @@ public class InputMenu : MonoBehaviour{
 				GUI.skin.textField.fontSize = (int)((bHeight/slices)/2);
 				
 				//URL and Image
-				if(spons.image.width == 0){
-					urls[numba] = GUI.TextArea(new Rect(bounds.x,bounds.y+(bounds.height/slices),(bounds.width),(bounds.height/slices)*2f),urls[numba]);
-					
-					bDisp = "Download Image";
-					if(requests[numba] != null){
-						if(requests[numba].progress < 1f){
-							bDisp = ((int)(requests[numba].progress*100f)).ToString()+"%";
-						}
-						else{
-							if(string.IsNullOrEmpty(requests[numba].error)){
-								requests[numba].LoadImageIntoTexture(spons.image);
-							}
-							else{
-								urls[numba] = "Couldn't load image";
-							}
-							requests[numba].Dispose();
-							requests[numba] = null;
-						}
-						
-					}
-					
-					if(GUI.Button(new Rect(bounds.x,bounds.y+((bounds.height/slices)*3f),(bounds.width),(bounds.height/slices/2)),bDisp)){
-						if(requests[numba] != null){
-							requests[numba].Dispose();
-							Debug.Log("Deleting old");
-						}
-						requests[numba] = new WWW(urls[numba]);
-						Debug.Log("Requesting new");
-					}
-				}
-				else{
-					GUI.DrawTexture(new Rect(bounds.x,bounds.y+(bounds.height/slices),bounds.width,bounds.height/slices*3f),spons.image,ScaleMode.ScaleToFit);
-					if(GUI.Button(new Rect(bounds.x+bounds.width-(bounds.height/slices),bounds.y+((bounds.height/slices)*3f),(bounds.height/slices),(bounds.height/slices)),"New")){
-						Texture2D.Destroy(spons.image);
-						spons.image = new Texture2D(0,0);
-					}
-				}
+				Utility.ImageBox(ref spons.image,ref SponsUrls[i],ref SponsRequests[i],bounds,slices);
 				
 				GUI.skin.button.fontSize = (int)((bHeight/slices)/2);
 				
@@ -259,43 +242,7 @@ public class InputMenu : MonoBehaviour{
 				GUI.skin.textField.fontSize = (int)((bHeight/slices)/2);
 				
 				//URL and Image
-				if(weap.image.width == 0){
-					urls[numba] = GUI.TextArea(new Rect(bounds.x,bounds.y+(bounds.height/slices),(bounds.width),(bounds.height/slices)*2f),urls[numba]);
-					
-					bDisp = "Download Image";
-					if(requests[numba] != null){
-						if(requests[numba].progress < 1f){
-							bDisp = ((int)(requests[numba].progress*100f)).ToString()+"%";
-						}
-						else{
-							if(string.IsNullOrEmpty(requests[numba].error)){
-								requests[numba].LoadImageIntoTexture(weap.image);
-							}
-							else{
-								urls[numba] = "Couldn't load image";
-							}
-							requests[numba].Dispose();
-							requests[numba] = null;
-						}
-						
-					}
-					
-					if(GUI.Button(new Rect(bounds.x,bounds.y+((bounds.height/slices)*3f),(bounds.width),(bounds.height/slices/2)),bDisp)){
-						if(requests[numba] != null){
-							requests[numba].Dispose();
-							Debug.Log("Deleting old");
-						}
-						requests[numba] = new WWW(urls[numba]);
-						Debug.Log("Requesting new");
-					}
-				}
-				else{
-					GUI.DrawTexture(new Rect(bounds.x,bounds.y+(bounds.height/slices),bounds.width,bounds.height/slices*3f),weap.image,ScaleMode.ScaleToFit);
-					if(GUI.Button(new Rect(bounds.x+bounds.width-(bounds.height/slices),bounds.y+((bounds.height/slices)*3f),(bounds.height/slices),(bounds.height/slices)),"New")){
-						Texture2D.Destroy(weap.image);
-						weap.image = new Texture2D(0,0);
-					}
-				}
+				Utility.ImageBox(ref weap.image,ref WeapUrls[i],ref WeapRequests[i],bounds,slices);
 				
 				GUI.skin.button.fontSize = (int)((bHeight/slices)/2);
 				
@@ -314,12 +261,12 @@ public class InputMenu : MonoBehaviour{
 			
 			Rect bottomBox = new Rect(padX,(Screen.height*0.95f)+padY,Screen.width-(padX*2f),(Screen.height*0.05f)-(padY*2f));
 			
-			if(Manager.manager.sponsors.Count < 8){
+			if(Manager.manager.sponsors.Count < maxWeaps){
 				if(GUI.Button(new Rect(bottomBox.x,bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Add Sponsor")){
 					Manager.manager.sponsors.Add(new Sponsor(new Texture2D(0,0), "Sponsor "+(Manager.manager.weapons.Count+1).ToString()));
 				}
 			}
-			if(Manager.manager.weapons.Count < 8){
+			if(Manager.manager.weapons.Count < maxWeaps){
 				if(GUI.Button(new Rect(bottomBox.x+(bottomBox.width/3f),bottomBox.y,(bottomBox.width/3f)-padX,bottomBox.height),"Add Weapon")){
 					Manager.manager.weapons.Add(new Weapon(new Texture2D(0,0), "Weapon "+(Manager.manager.weapons.Count+1).ToString(),0.5f));
 				}
