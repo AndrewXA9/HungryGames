@@ -17,22 +17,22 @@ public class Simulate : MonoBehaviour {
 	
 	private string output = "";
 	
-	private Vector2 scrollPosition;
+	public Vector2 scrollPosition;
 	
 	void OnEnable() {
 		
-		//for(int i=0;i<500;i++){
-		//	output+=char.ConvertFromUtf32(Random.Range(65,65+24))+"\n";
-		//}
+		for(int i=0;i<500;i++){
+			output+=char.ConvertFromUtf32(Random.Range(65,65+24))+"\n";
+		}
 		
 	}
 	
 	void Update(){
-		if(Input.GetKeyDown(KeyCode.Space)){
+		/*if(Input.GetKeyDown(KeyCode.Space)){
 			Manager.manager.contestants[Random.Range(0,24)].alive = false;
 			
 		}
-		output+=char.ConvertFromUtf32(Random.Range(65,65+24))+"\n";
+		output+=char.ConvertFromUtf32(Random.Range(65,65+24))+"\n";*/
 	}
 	
 	//private Vector2 scroll;
@@ -82,21 +82,14 @@ public class Simulate : MonoBehaviour {
 			}
 		}
 		
-		//Log
-		//GUI.TextArea(new Rect((Screen.width/16f)*9f,padY,(Screen.width/16f)*6f,Screen.height-(padY*2f)),output);
-		
-		scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(100), GUILayout.Height(100));
-		GUILayout.Label(longString);
-		if (GUILayout.Button("Clear")){
-			longString = "";
-		}
-		
-		GUILayout.EndScrollView();
-		if (GUILayout.Button("Add More Text")){
-			longString += "\nHere is another line";
-		}
-		
-		
+		GUI.skin.textArea.alignment = TextAnchor.UpperLeft;
+		Rect boxo = new Rect((Screen.width/16f)*9f,padY,(Screen.width/16f)*6f,Screen.height-(padY*2f));
+		GUILayout.BeginArea(boxo);
+			GUI.Box(new Rect(0f,0f,boxo.width,boxo.height),GUIContent.none);
+			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(boxo.width), GUILayout.Height(boxo.height));
+				GUILayout.TextField(output);
+			GUILayout.EndScrollView();
+		GUILayout.EndArea();
 		
 	}
 	
