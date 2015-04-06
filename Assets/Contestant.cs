@@ -33,6 +33,9 @@ public class Contestant{
 		stamina = 0.5f;
 		relationships = new Dictionary<Contestant, float>();
 		
+		weapons = new List<Weapon>();
+		relationships = new Dictionary<Contestant, float>();
+		
 		kills = 0;
 		
 		alive = true;

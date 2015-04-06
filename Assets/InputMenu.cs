@@ -54,6 +54,12 @@ public class InputMenu : MonoBehaviour{
 			foreach(Contestant i in Manager.manager.contestants){
 				i.image = img;
 			}
+			foreach(Weapon i in Manager.manager.weapons){
+				i.image = img;
+			}
+			foreach(Sponsor i in Manager.manager.sponsors){
+				i.image = img;
+			}
 		}
 	}
 	

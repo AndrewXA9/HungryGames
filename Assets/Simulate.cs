@@ -19,20 +19,25 @@ public class Simulate : MonoBehaviour {
 	
 	public Vector2 scrollPosition;
 	
+	private int displayMode = 0;
+	
 	void OnEnable() {
 		
-		for(int i=0;i<500;i++){
-			output+=char.ConvertFromUtf32(Random.Range(65,65+24))+"\n";
-		}
+//		for(int i=0;i<10;i++){
+//			output+=char.ConvertFromUtf32(Random.Range(65,65+24))+"\n";
+//		}
 		
 	}
 	
 	void Update(){
-		/*if(Input.GetKeyDown(KeyCode.Space)){
-			Manager.manager.contestants[Random.Range(0,24)].alive = false;
+		if(Input.GetKeyDown(KeyCode.Space)){
+			//Manager.manager.contestants[Random.Range(0,24)].weapons.Add(Manager.manager.weapons[Random.Range(0,Manager.manager.weapons.Count)]);
+			foreach(Contestant i in Manager.manager.contestants){
+				i.weapons.Add(Manager.manager.weapons[Random.Range(0,Manager.manager.weapons.Count)]);
+			}
 			
 		}
-		output+=char.ConvertFromUtf32(Random.Range(65,65+24))+"\n";*/
+		//output+=char.ConvertFromUtf32(Random.Range(65,65+24))+"\n";
 	}
 	
 	//private Vector2 scroll;
@@ -63,6 +68,8 @@ public class Simulate : MonoBehaviour {
 				
 				GUI.Box(bounds,"");
 				
+				GUI.skin.label.alignment = TextAnchor.MiddleCenter;
+				
 				//District
 				GUI.Label(new Rect(bounds.x,bounds.y,bounds.width/4f,bounds.height/slices),cont.district.ToString()+":");
 				
@@ -78,18 +85,46 @@ public class Simulate : MonoBehaviour {
 					GUI.DrawTexture(new Rect(bounds.x,bounds.y+(bounds.height/slices),bounds.width,bounds.height/slices*3f),X,ScaleMode.ScaleToFit);
 				}
 				
+				//kills
+				GUI.Label(new Rect(bounds.x,bounds.y+((bounds.height/slices)*4f),bounds.width-(bounds.height/slices),bounds.height/slices*1f),"Kills: "+Manager.manager.contestants[numba].kills.ToString());
+				
+				//weapons
+				for(int k=0;k<Manager.manager.contestants[numba].weapons.Count;k++){
+					GUI.Label(new Rect(bounds.x,bounds.y+((bounds.height/slices)*(5f+((float)k))),bounds.width-(bounds.height/slices),bounds.height/slices*1f),Manager.manager.contestants[numba].weapons[k].name);
+					GUI.DrawTexture(new Rect(bounds.x+bounds.width-(bounds.height/slices),bounds.y+((bounds.height/slices)*(5f+((float)k))),(bounds.height/slices),bounds.height/slices),Manager.manager.contestants[numba].weapons[k].image,ScaleMode.ScaleToFit);
+				}
+				
 				numba++;
 			}
 		}
 		
-		GUI.skin.textArea.alignment = TextAnchor.UpperLeft;
-		Rect boxo = new Rect((Screen.width/16f)*9f,padY,(Screen.width/16f)*6f,Screen.height-(padY*2f));
-		GUILayout.BeginArea(boxo);
-			GUI.Box(new Rect(0f,0f,boxo.width,boxo.height),GUIContent.none);
-			scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(boxo.width), GUILayout.Height(boxo.height));
-				GUILayout.TextField(output);
-			GUILayout.EndScrollView();
-		GUILayout.EndArea();
+		if(displayMode == 0){
+		
+			Rect boxo = new Rect((Screen.width/2f)+padX,padY,(Screen.width/2f)-(padX*2f),(Screen.height*0.95f)-(padY*2f));
+			GUI.Box(new Rect(boxo.x,boxo.y,boxo.width,boxo.height),GUIContent.none);
+			GUILayout.BeginArea(boxo);
+				GUI.Box(new Rect(0f,0f,boxo.width,boxo.height),GUIContent.none);
+				scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(boxo.width), GUILayout.Height(boxo.height));
+					
+				GUILayout.EndScrollView();
+			GUILayout.EndArea();
+			
+		}
+		else if(displayMode == 1){
+
+			GUI.skin.textArea.alignment = TextAnchor.UpperLeft;
+			Rect boxo = new Rect((Screen.width/16f)*9f,padY,(Screen.width/16f)*6f,(Screen.height*0.95f)-(padY*2f));
+			GUILayout.BeginArea(boxo);
+				GUI.Box(new Rect(0f,0f,boxo.width,boxo.height),GUIContent.none);
+				scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(boxo.width), GUILayout.Height(boxo.height));
+					GUILayout.TextArea(output);
+				GUILayout.EndScrollView();
+			GUILayout.EndArea();
+		}
+		
+		
+		
+		
 		
 	}
 	
