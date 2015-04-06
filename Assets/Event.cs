@@ -10,4 +10,11 @@ public class Event {
 	
 	private string[] strings;
 	
+	public Event(string _text, Contestant[] _winners, Contestant[] _losers, Weapon[] _weapons){
+		
+	}
+	
+	private string[] Parse(string[] _strings){
+		
+	}
 }
