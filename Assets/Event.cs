@@ -15,6 +15,6 @@ public class Event {
 	}
 	
 	private string[] Parse(string[] _strings){
-		
+		return new string[0];
 	}
 }
